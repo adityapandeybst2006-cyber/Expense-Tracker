@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Issue Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🩺 Health Issue Tracker</h1>
+
+        <div class="card">
+            <form id="healthForm">
+                <div class="input-group">
+                    <input type="text" id="name" placeholder="Patient Name" required>
+                    <input type="number" id="age" placeholder="Age" required>
+                    <input type="date" id="date" required>
+                </div>
+                <input type="text" id="problem" placeholder="What is the health issue?" required>
+                <textarea id="remedy" placeholder="Suggested Home Remedy..." required></textarea>
+                <button type="submit" id="submitBtn">➕ Save Record</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search by name or issue...">
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name (Age)</th>
+                        <th>Issue</th>
+                        <th>Remedy</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recordTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
