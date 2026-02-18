@@ -1,26 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Expense Tracker</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Expense Tracker</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); width: 100%; max-width: 400px; }
+        h2 { margin-top: 0; text-align: center; }
+        .balance { font-size: 1.5rem; font-weight: bold; text-align: center; color: var(--primary); margin-bottom: 1.5rem; }
+        form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input, select, button { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1d4ed8; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f1f5f9; padding: 10px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .delete-btn { background: #ef4444; padding: 4px 8px; font-size: 0.8rem; }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Expense Tracker</h1>
+<div class="card">
+    <h2>Expense Tracker</h2>
+    <div class="balance">Total: $<span id="total-amount">0.00</span></div>
 
-    <h2>Balance: $<span id="balance">0.00</span></h2>
-
-    <form id="transaction-form">
-      <input type="text" id="description" placeholder="Description" required>
-      <input type="number" id="amount" placeholder="Amount (+ income, - expense)" required>
-      <button type="submit">Add Transaction</button>
+    <form id="expense-form">
+        <input type="text" id="desc" placeholder="What did you buy?" required>
+        <input type="number" id="amt" placeholder="Amount ($)" step="0.01" required>
+        <select id="cat">
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Fun">Fun</option>
+            <option value="Bills">Bills</option>
+        </select>
+        <button type="submit">Add Expense</button>
     </form>
 
-    <ul id="transaction-list"></ul>
-  </div>
+    <ul id="expense-list"></ul>
+</div>
 
-  <script src="script.js"></script>
+<script>
+    const form = document.getElementById('expense-form');
+    const list = document.getElementById('expense-list');
+    const totalDisplay = document.getElementById('total-amount');
+
+    // Load data from LocalStorage or start empty
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    function updateUI() {
+        list.innerHTML = '';
+        let total = 0;
+
+        expenses.forEach((ex, index) => {
+            total += ex.amount;
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span><strong>${ex.desc}</strong> <br><small>${ex.cat}</small></span>
+                <span>$${ex.amount.toFixed(2)} 
+                <button class="delete-btn" onclick="deleteExpense(${index})">X</button></span>
+            `;
+            list.appendChild(li);
+        });
+
+        totalDisplay.innerText = total.toFixed(2);
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newEx = {
+            desc: document.getElementById('desc').value,
+            amt: document.getElementById('amt').value,
+            cat: document.getElementById('cat').value,
+            amount: parseFloat(document.getElementById('amt').value)
+        };
+        expenses.push(newEx);
+        form.reset();
+        updateUI();
+    });
+
+    window.deleteExpense = (index) => {
+        expenses.splice(index, 1);
+        updateUI();
+    };
+
+    updateUI(); // Initial render
+</script>
+
 </body>
 </html>
